@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -151,18 +152,22 @@ public class SelectActivity extends AppCompatActivity {
                 imageRef.putFile(selectedpic).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        HashMap<String, Boolean> map = new HashMap<>();
+                        map.put(FirebaseAuth.getInstance().getCurrentUser().getUid(), false);
                         String key = ref.getKey();
                         ref.child("host").setValue(host);
                         ref.child("title").setValue(tempTitle);
                         ref.child("date").setValue(date);
                         ref.child("description").setValue(tempDescription);
-                        ref.child("interested").setValue(new HashMap<String, Boolean>());
+                        ref.child("interested").setValue(map);
                         ref.child("ID").setValue(key);
+
+                        Intent i = new Intent(SelectActivity.this, FeedActivity.class);
+                        SelectActivity.this.startActivityForResult(i, 1);
                     }
                 });
 
-                Intent i = new Intent(SelectActivity.this, FeedActivity.class);
-                SelectActivity.this.startActivityForResult(i, 1);
+
 
 
             }

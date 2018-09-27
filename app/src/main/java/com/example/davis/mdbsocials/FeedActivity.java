@@ -17,6 +17,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FeedActivity extends AppCompatActivity {
 
@@ -50,8 +52,8 @@ public class FeedActivity extends AppCompatActivity {
                     String currentDate = child.child("date").getValue(String.class);
                     String currentTitle = child.child("title").getValue(String.class);
                     String currentID = child.child("ID").getValue(String.class);
-
-                    Post p = new Post(currentTitle, currentDescription, currentHost, currentDate, currentID);
+                    HashMap<String, Boolean> map = (HashMap<String, Boolean>) child.child("interested").getValue();
+                    Post p = new Post(currentTitle, currentDescription, currentHost, currentDate, currentID, map);
                     allPosts.add(p);
                 }
                 Collections.reverse(allPosts);

@@ -20,13 +20,16 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -56,25 +59,31 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.dateview.setText(data.get(position).date);
         StorageReference storageRef = FirebaseStorage.getInstance().getReference().child(data.get(position).ID + ".png");
 
+
+
         Glide.with(context).using(new FirebaseImageLoader()).load(storageRef).into(holder.imageView);
 
-        //DatabaseReference ref = FirebaseDatabase.getInstance().ge
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("events").child(data.get(pos).ID);
+        //final boolean interested = data.get(pos).interested.contains(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        final boolean interested = data.get(pos).interested.contains(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        holder.liked.setText(data.get(pos).interested.size());
+        data.get(pos).updateLikes();
+        holder.liked.setText(Integer.toString(data.get(pos).numLikes));
+        if (data.get(pos).interested.containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid()) && data.get(pos).interested.get(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            holder.like.setText("Unlike");
+        } else {
+            holder.like.setText("Like");
+        }
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (interested) {
-
-                    holder.like.setText("Like");
+                data.get(pos).updateInterested(FirebaseAuth.getInstance().getCurrentUser().getUid(), ref);
+                data.get(pos).updateLikes();
+                if (data.get(pos).interested.containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid()) && data.get(pos).interested.get(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    holder.like.setText("Unlike");
                 } else {
-
                     holder.like.setText("Like");
                 }
-                holder.liked.setText(data.get(pos).interested.size());
+                holder.liked.setText(Integer.toString(data.get(pos).numLikes));
             }
         });
 
@@ -92,6 +101,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         TextView dateview;
         TextView liked;
         Button like;
+        Post currentP;
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.posttitle);
@@ -99,6 +109,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             dateview = itemView.findViewById(R.id.postdate);
             liked = itemView.findViewById(R.id.numLikes);
             like = itemView.findViewById(R.id.likeButton);
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,6 +121,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     context.startActivity(i);
                 }
             });
+
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference mRef = database.getReference("events");
+
+//            mRef.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    currentP = data.get(getAdapterPosition());
+//                    HashMap<String, Boolean> m = new HashMap<>();
+//                    for (DataSnapshot child : dataSnapshot.child(currentP.ID).child("interested").getChildren()) {
+//                        m.put(child.getKey(), (Boolean) child.getValue());
+//                    }
+//                    currentP.interested = m;
+//                    currentP.updateLikes();
+//                    liked.setText(Integer.toString(currentP.numLikes));
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            });
         }
     }
 
