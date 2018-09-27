@@ -22,6 +22,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SelectActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 1;
@@ -155,10 +156,11 @@ public class SelectActivity extends AppCompatActivity {
                         ref.child("title").setValue(tempTitle);
                         ref.child("date").setValue(date);
                         ref.child("description").setValue(tempDescription);
-                        ref.child("interested").setValue(new ArrayList<String>());
+                        ref.child("interested").setValue(new HashMap<String, Boolean>());
+                        ref.child("ID").setValue(key);
                     }
                 });
-                //Post p = new Post(tempTitle, tempDescription, host);
+
                 Intent i = new Intent(SelectActivity.this, FeedActivity.class);
                 SelectActivity.this.startActivityForResult(i, 1);
 
