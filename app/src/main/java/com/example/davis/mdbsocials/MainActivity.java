@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
-    private static FirebaseAuth mAuth;
+    public static FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private static final String TAG = "Login Listener";
 
@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
                 signUp();
             }
         });
-
     }
 
     private void login() {
