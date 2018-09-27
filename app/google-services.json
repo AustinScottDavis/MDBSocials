@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1042820016384",
+    "firebase_url": "https://mdbsocials-c3c00.firebaseio.com",
+    "project_id": "mdbsocials-c3c00",
+    "storage_bucket": "mdbsocials-c3c00.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1042820016384:android:e33095f9d999d2ec",
+        "android_client_info": {
+          "package_name": "com.example.davis.mdbsocials"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1042820016384-6bppt2sj1r04gus5o8t8iv9vvqhib8ph.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.davis.mdbsocials",
+            "certificate_hash": "8dcec0435c27e922906066e014b7c6015f9beeb4"
+          }
+        },
+        {
+          "client_id": "1042820016384-43c0eth8sk6al3esuku06vf22gv9o4pb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdc55d75EnPrm2EDh-gn3Hx68OveTnH9g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1042820016384-43c0eth8sk6al3esuku06vf22gv9o4pb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
