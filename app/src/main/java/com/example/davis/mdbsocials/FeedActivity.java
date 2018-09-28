@@ -115,6 +115,13 @@ public class FeedActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.signOut).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+            }
+        });
+
         //run();
 
     }
@@ -159,5 +166,11 @@ public class FeedActivity extends AppCompatActivity {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             //allPosts.clear();
         }
+    }
+
+    public void signOut() {
+        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+        MainActivity.mAuth.signOut();
+        startActivity(i);
     }
 }
