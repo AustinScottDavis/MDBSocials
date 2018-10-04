@@ -1,5 +1,13 @@
 <resources>
-    <string name="app_name">MDBSocials</string>
+    <string name="app_name">MDB Socials</string>
     <string name="like">Like</string>
     <string name="unlike">Unlike</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="signup">SignUp</string>
+    <string name="welcome_to_mdb_socials">Welcome to MDB Socials</string>
+    <string name="mdb_logo">mdb logo</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="plus">+</string>
 </resources>

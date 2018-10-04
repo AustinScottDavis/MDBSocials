@@ -15,7 +15,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     public static FirebaseAuth mAuth;
     //private FirebaseAuth.AuthStateListener mAuthListener;
     private static final String TAG = "Login Listener";
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // User is signed in
-            Intent i = new Intent(MainActivity.this, FeedActivity.class);
+            Intent i = new Intent(LoginActivity.this, FeedActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
         } else {
@@ -59,12 +59,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 // Successful sign-in
                                 Log.d(TAG, "createUserWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                Intent intent = new Intent(MainActivity.this, FeedActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, FeedActivity.class);
                                 startActivity(intent);
                             } else {
                                 // Failed sign-in
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(MainActivity.this, "Authentication failed.",
+                                Toast.makeText(LoginActivity.this, "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -84,13 +84,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             if (task.isSuccessful()) {
                                 // Successful sign-in
                                 Log.d(TAG, "createUserWithEmail:success");
-                                Intent intent = new Intent(MainActivity.this, FeedActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, FeedActivity.class);
                                 startActivity(intent);
 
                             } else {
                                 // Failed sign-in
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(MainActivity.this, "Authentication failed.",
+                                Toast.makeText(LoginActivity.this, "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
 
                             }

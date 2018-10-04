@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/picture"
-        android:layout_width="247dp"
-        android:layout_height="210dp"
+        android:layout_width="306dp"
+        android:layout_height="307dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/holo_blue_light"
             android:textSize="30sp"
             android:textStyle="bold" />
 

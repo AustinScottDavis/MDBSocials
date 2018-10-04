@@ -1,6 +1,7 @@
 package com.example.davis.mdbsocials;
 
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,7 @@ public class FeedActivity extends AppCompatActivity implements View.OnClickListe
 
     public static ArrayList<Post> allPosts = new ArrayList<>();
     private RecyclerView.Adapter postAdapter;
+    private SwipeRefreshLayout swipeContainer;
     public DatabaseReference mRef;
 
     @Override
@@ -28,9 +30,8 @@ public class FeedActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
-        getActionBar().setIcon(R.drawable.mdb_logo);
         RecyclerView postRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        //postRecyclerView.setHasFixedSize(true);
+
         RecyclerView.LayoutManager postLayoutManager = new LinearLayoutManager(this);
         postRecyclerView.setLayoutManager(postLayoutManager);
         postAdapter = new PostAdapter(getApplicationContext(), allPosts);
@@ -67,16 +68,15 @@ public class FeedActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.signOut).setOnClickListener(this);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        /*if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            //allPosts.clear();
-        }*/
+
     }
 
     public void signOut() {
-        Intent i = new Intent(getApplicationContext(), MainActivity.class);
-        MainActivity.mAuth.signOut();
+        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+        LoginActivity.mAuth.signOut();
         startActivity(i);
     }
 

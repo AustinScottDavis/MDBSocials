@@ -9,68 +9,48 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SelectActivity extends AppCompatActivity {
+public class SelectActivity extends AppCompatActivity implements View.OnClickListener {
     public static final int REQUEST_CODE = 1;
-    ImageView temppicture;
+    ImageView tempPicture;
     String tempTitle;
     String tempDescription;
     String host;
     String date;
-    Uri selectedpic;
+    Uri selectedPic;
     EditText editTitle;
     EditText editDescription;
     EditText hostName;
     EditText editDate;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select);
 
-        //findViewById(R.id.tempTitle).setVisibility(View.GONE);
         editTitle = findViewById(R.id.tempTitle);
         editDescription = findViewById(R.id.tempDesc);
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
         hostName = findViewById(R.id.host);
         editDate = findViewById(R.id.date);
-        temppicture = findViewById(R.id.temppicture);
-        select();
+        tempPicture = findViewById(R.id.temppicture);
 
-    }
-
-    public void select() {
-        findViewById(R.id.selectImage).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                getIntent.setType("image/*");
-
-                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                pickIntent.setType("image/*");
-
-                Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
-
-                startActivityForResult(chooserIntent, REQUEST_CODE);
-                //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                //startActivityForResult(intent, REQUEST_CODE);
-            }
-        });
+        findViewById(R.id.selectImage).setOnClickListener(this);
+        findViewById(R.id.submit).setOnClickListener(this);
 
         editTitle.addTextChangedListener(new TextWatcher() {
             @Override
@@ -137,19 +117,42 @@ public class SelectActivity extends AppCompatActivity {
                 date = s.toString();
             }
         });
+    }
 
-        findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Post p = new Post(selectedpic, tempcaption);
-//                FeedActivity.allPosts.add(p);
-//                Intent i = new Intent(SelectActivity.this, ListActivity.class);
-//                SelectActivity.this.startActivityForResult(i, 1);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            selectedPic = data.getData();
+            findViewById(R.id.tempTitle).setVisibility(View.VISIBLE);
+            tempPicture.setImageURI(selectedPic);
+        }
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.selectImage:
+                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                getIntent.setType("image/*");
+
+                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickIntent.setType("image/*");
+
+                Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+                startActivityForResult(chooserIntent, REQUEST_CODE);
+                break;
+            case R.id.submit:
+                progressBar.setVisibility(View.VISIBLE);
                 final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("events").push();
 
                 StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://mdbsocials-c3c00.appspot.com");
                 StorageReference imageRef = storageRef.child(ref.getKey() + ".png");
-                imageRef.putFile(selectedpic).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                imageRef.putFile(selectedPic).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         HashMap<String, Boolean> map = new HashMap<>();
@@ -166,30 +169,7 @@ public class SelectActivity extends AppCompatActivity {
                         SelectActivity.this.startActivityForResult(i, 1);
                     }
                 });
-
-
-
-
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            //Bundle bundle = data.getExtras();
-            //temppicture.setImageBitmap((Bitmap) bundle.get("data"));
-            selectedpic = data.getData();
-            findViewById(R.id.tempTitle).setVisibility(View.VISIBLE);
-            temppicture.setImageURI(selectedpic);
-            select();
+                break;
         }
-
-    }
-
-    public void setPicture() {
-        temppicture.setImageURI(selectedpic);
     }
 }
