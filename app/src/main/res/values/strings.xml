@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MDBSocials</string>
+    <string name="like">Like</string>
+    <string name="unlike">Unlike</string>
 </resources>

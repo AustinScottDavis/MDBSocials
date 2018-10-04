@@ -2,11 +2,7 @@ package com.example.davis.mdbsocials;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -17,27 +13,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
-    Context context;
+    private Context context;
     ArrayList<Post> data;
 
-    public PostAdapter(Context context, ArrayList<Post> data) {
+    PostAdapter(Context context, ArrayList<Post> data) {
         this.context = context;
         this.data = data;
     }
@@ -52,14 +43,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull final PostViewHolder holder, int position) {
         final int pos = position;
         holder.textView.setText(data.get(position).title);
-        //holder.textView.setText(data.get(position).date);
-        //holder.textView.setText(data.get(position).description);
-        //holder.textView.setText(data.get(position).uploader);
-        //holder.textView.setText(data.get(position).interested);
+        /*holder.textView.setText(data.get(position).date);
+        holder.textView.setText(data.get(position).description);
+        holder.textView.setText(data.get(position).uploader);
+        holder.textView.setText(data.get(position).interested);*/
         holder.dateview.setText(data.get(position).date);
         StorageReference storageRef = FirebaseStorage.getInstance().getReference().child(data.get(position).ID + ".png");
-
-
 
         Glide.with(context).using(new FirebaseImageLoader()).load(storageRef).into(holder.imageView);
 
@@ -69,9 +58,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         data.get(pos).updateLikes();
         holder.liked.setText(Integer.toString(data.get(pos).numLikes));
         if (data.get(pos).interested.containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid()) && data.get(pos).interested.get(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-            holder.like.setText("Unlike");
+            holder.like.setText(R.string.like);
         } else {
-            holder.like.setText("Like");
+            holder.like.setText(R.string.unlike);
         }
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,9 +68,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 data.get(pos).updateInterested(FirebaseAuth.getInstance().getCurrentUser().getUid(), ref);
                 data.get(pos).updateLikes();
                 if (data.get(pos).interested.containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid()) && data.get(pos).interested.get(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                    holder.like.setText("Unlike");
+                    holder.like.setText(R.string.unlike);
                 } else {
-                    holder.like.setText("Like");
+                    holder.like.setText(R.string.like);
                 }
                 holder.liked.setText(Integer.toString(data.get(pos).numLikes));
             }
@@ -95,14 +84,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         return data.size();
     }
 
-    public class PostViewHolder extends RecyclerView.ViewHolder {
+    public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView textView;
         ImageView imageView;
         TextView dateview;
         TextView liked;
         Button like;
         Post currentP;
-        public PostViewHolder(@NonNull View itemView) {
+        PostViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.posttitle);
             imageView = itemView.findViewById(R.id.imageView);
@@ -110,39 +99,41 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             liked = itemView.findViewById(R.id.numLikes);
             like = itemView.findViewById(R.id.likeButton);
 
+            itemView.setOnClickListener(this);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference mRef = database.getReference("events");
+
+            /*mRef.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onClick(View v) {
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    currentP = data.get(getAdapterPosition());
+                    HashMap<String, Boolean> m = new HashMap<>();
+                    for (DataSnapshot child : dataSnapshot.child(currentP.ID).child("interested").getChildren()) {
+                        m.put(child.getKey(), (Boolean) child.getValue());
+                    }
+                    currentP.interested = m;
+                    currentP.updateLikes();
+                    liked.setText(Integer.toString(currentP.numLikes));
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });*/
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch(v.getId()) {
+                case R.id.imageView:
                     Post post = data.get(getAdapterPosition());
                     Intent i = new Intent(context, DetailsActivity.class);
                     i.putExtra("post", post);
                     i.addFlags(FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(i);
-                }
-            });
-
-            final FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference mRef = database.getReference("events");
-
-//            mRef.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//                    currentP = data.get(getAdapterPosition());
-//                    HashMap<String, Boolean> m = new HashMap<>();
-//                    for (DataSnapshot child : dataSnapshot.child(currentP.ID).child("interested").getChildren()) {
-//                        m.put(child.getKey(), (Boolean) child.getValue());
-//                    }
-//                    currentP.interested = m;
-//                    currentP.updateLikes();
-//                    liked.setText(Integer.toString(currentP.numLikes));
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//
-//                }
-//            });
+            }
         }
     }
 

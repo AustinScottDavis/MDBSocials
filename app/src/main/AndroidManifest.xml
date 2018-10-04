@@ -4,7 +4,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/mdb_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -16,9 +16,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FeedActivity" />
-        <activity android:name=".SelectActivity" />
-        <activity android:name=".DetailsActivity"></activity>
+        <activity
+            android:name=".FeedActivity"
+            android:icon="@drawable/mdb_logo"/>
+        <activity
+            android:icon="@drawable/mdb_logo"
+            android:name=".SelectActivity" />
+        <activity
+            android:icon="@drawable/mdb_logo"
+            android:name=".DetailsActivity" />
     </application>
+
+
 
 </manifest>

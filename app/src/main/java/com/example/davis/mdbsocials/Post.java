@@ -1,12 +1,8 @@
 package com.example.davis.mdbsocials;
 
-import android.net.Uri;
-import android.provider.ContactsContract;
-
 import com.google.firebase.database.DatabaseReference;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Post implements Serializable{
@@ -19,7 +15,7 @@ public class Post implements Serializable{
     HashMap<String, Boolean> interested;
     int numLikes = 0;
 
-    public Post(String title, String description, String uploader, String date, String id, HashMap<String, Boolean> map) {
+    Post(String title, String description, String uploader, String date, String id, HashMap<String, Boolean> map) {
         this.title = title;
         this.description = description;
         this.uploader = uploader;
