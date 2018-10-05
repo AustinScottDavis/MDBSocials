@@ -49,9 +49,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         Glide.with(context).using(new FirebaseImageLoader()).load(storageRef).into(holder.imageView);
         holder.progressBar.setVisibility(View.GONE);
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("events").child(data.get(pos).ID);
-        //final boolean interested = data.get(pos).interested.contains(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("events").child(data.get(position).ID);
 
+        //Determines if the user is in the map of users that have liked the post
         data.get(pos).updateLikes();
         holder.liked.setText(Integer.toString(data.get(pos).numLikes));
         if (data.get(pos).interested.containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid()) && data.get(pos).interested.get(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
@@ -59,6 +59,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         } else {
             holder.like.setText(R.string.like);
         }
+
+        //Adds a listener to check for changes in the amount of likes
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +76,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
 
 
+
     }
 
     @Override
@@ -87,7 +90,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         TextView dateview;
         TextView liked;
         Button like;
-        Post currentP;
         ProgressBar progressBar;
         PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -111,25 +113,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference mRef = database.getReference("events");
-
-            /*mRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    currentP = data.get(getAdapterPosition());
-                    HashMap<String, Boolean> m = new HashMap<>();
-                    for (DataSnapshot child : dataSnapshot.child(currentP.ID).child("interested").getChildren()) {
-                        m.put(child.getKey(), (Boolean) child.getValue());
-                    }
-                    currentP.interested = m;
-                    currentP.updateLikes();
-                    liked.setText(Integer.toString(currentP.numLikes));
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });*/
         }
     }
 

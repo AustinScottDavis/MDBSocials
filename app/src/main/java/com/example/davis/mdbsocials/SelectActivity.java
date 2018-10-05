@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -24,11 +25,11 @@ import java.util.HashMap;
 
 public class SelectActivity extends AppCompatActivity implements View.OnClickListener {
     public static final int REQUEST_CODE = 1;
-    ImageView tempPicture;
-    String tempTitle;
-    String tempDescription;
-    String host;
-    String date;
+    ImageView tempPicture = null;
+    String tempTitle = null;
+    String tempDescription = null;
+    String host = null;
+    String date = null;
     Uri selectedPic;
     EditText editTitle;
     EditText editDescription;
@@ -47,11 +48,12 @@ public class SelectActivity extends AppCompatActivity implements View.OnClickLis
         progressBar.setVisibility(View.GONE);
         hostName = findViewById(R.id.host);
         editDate = findViewById(R.id.date);
-        tempPicture = findViewById(R.id.temppicture);
+
 
         findViewById(R.id.selectImage).setOnClickListener(this);
         findViewById(R.id.submit).setOnClickListener(this);
 
+        //Listeners to check if the user entered information into the text fields
         editTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -120,10 +122,11 @@ public class SelectActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //Assigns the imageview to the users selected picture and stores to picture to be uploaded to Firebase
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            tempPicture = findViewById(R.id.temppicture);
             selectedPic = data.getData();
             findViewById(R.id.tempTitle).setVisibility(View.VISIBLE);
             tempPicture.setImageURI(selectedPic);
@@ -147,28 +150,36 @@ public class SelectActivity extends AppCompatActivity implements View.OnClickLis
                 startActivityForResult(chooserIntent, REQUEST_CODE);
                 break;
             case R.id.submit:
-                progressBar.setVisibility(View.VISIBLE);
-                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("events").push();
+                if (tempDescription == null || tempPicture == null || host == null || tempTitle == null || date == null) {
+                    Toast.makeText(SelectActivity.this, "Please fill in all the information.",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    progressBar.setVisibility(View.VISIBLE);
+                    final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("events").push();
 
-                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://mdbsocials-c3c00.appspot.com");
-                StorageReference imageRef = storageRef.child(ref.getKey() + ".png");
-                imageRef.putFile(selectedPic).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        HashMap<String, Boolean> map = new HashMap<>();
-                        map.put(FirebaseAuth.getInstance().getCurrentUser().getUid(), false);
-                        String key = ref.getKey();
-                        ref.child("host").setValue(host);
-                        ref.child("title").setValue(tempTitle);
-                        ref.child("date").setValue(date);
-                        ref.child("description").setValue(tempDescription);
-                        ref.child("interested").setValue(map);
-                        ref.child("ID").setValue(key);
+                    StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://mdbsocials-c3c00.appspot.com");
+                    StorageReference imageRef = storageRef.child(ref.getKey() + ".png");
+                    imageRef.putFile(selectedPic).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            HashMap<String, Boolean> map = new HashMap<>();
+                            map.put(FirebaseAuth.getInstance().getCurrentUser().getUid(), false);
+                            String key = ref.getKey();
 
-                        Intent i = new Intent(SelectActivity.this, FeedActivity.class);
-                        SelectActivity.this.startActivityForResult(i, 1);
-                    }
-                });
+                            HashMap<String, Object> data = new HashMap<>();
+                            data.put("host", host);
+                            data.put("title", tempTitle);
+                            data.put("date", date);
+                            data.put("description", tempDescription);
+                            data.put("interested", map);
+                            data.put("ID", key);
+                            ref.setValue(data);
+
+                            Intent i = new Intent(SelectActivity.this, FeedActivity.class);
+                            SelectActivity.this.startActivityForResult(i, 1);
+                        }
+                    });
+                }
                 break;
         }
     }

@@ -10,7 +10,6 @@ public class Post implements Serializable{
     String description;
     String uploader;
     String date;
-    //ArrayList<String> interested;
     String ID;
     HashMap<String, Boolean> interested;
     int numLikes = 0;
@@ -25,6 +24,7 @@ public class Post implements Serializable{
     }
 
     public void updateInterested(String id, DatabaseReference ref) {
+        //Adds the current user to the HashMap of interested members
         if (interested.containsKey(id)) {
             interested.put(id, !interested.get(id));
             ref.child("interested").setValue(interested);
@@ -36,6 +36,8 @@ public class Post implements Serializable{
     }
 
     public void updateLikes() {
+        //Updates the number of likes on a particular post by looking at the true values in the
+        //interested HashMap
         int i = 0;
         for (String key : interested.keySet()) {
             if (interested.get(key)) {

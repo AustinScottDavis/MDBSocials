@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     public static FirebaseAuth mAuth;
-    //private FirebaseAuth.AuthStateListener mAuthListener;
     private static final String TAG = "Login Listener";
 
     @Override
@@ -26,12 +25,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
-        /*mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                Log.d(TAG, "Data changed");
-            }
-        };*/
         findViewById(R.id.loginButton).setOnClickListener(this);
         findViewById(R.id.signUpButton).setOnClickListener(this);
 
@@ -48,6 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void login() {
+        //Logs the user in with an existing Firebase account
         String email = ((EditText) findViewById(R.id.email)).getText().toString();
         String password = ((EditText) findViewById(R.id.password)).getText().toString();
         if (!email.equals("") && !password.equals("")) {
@@ -73,6 +67,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void signUp() {
+        //Creates a new user in the Firebase database and logs the user in with that account
         String email = ((EditText) findViewById(R.id.email)).getText().toString();
         String password = ((EditText) findViewById(R.id.password)).getText().toString();
 
